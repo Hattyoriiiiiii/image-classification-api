@@ -22,9 +22,13 @@ source venv/bin/activate
 3. Install the required packages:
 
 ```bash
+brew install libheif
+
 python3 -m pip install --upgrade pip
 pip install fastapi "uvicorn[standard]"
 pip install numpy python-multipart pillow torch torchvision
+pip install pyheif
+
 # pip install -r requirements.txt
 ```
 
@@ -32,8 +36,8 @@ pip install numpy python-multipart pillow torch torchvision
 
 ```bash
 # uvicorn src.main:app --reload --port 8080
-uvicorn src.main:app --host 0.0.0.0 --port 8000
-# uvicorn src.main:app
+# uvicorn src.main:app --host 0.0.0.0 --port 8000
+uvicorn src.main_flyer:app --host 0.0.0.0 --port 8000
 ```
 
 The server will be available at http://localhost:8000.
@@ -44,7 +48,11 @@ Tests are located in the `tests/` directory. To run the tests, use the following
 
 ```bash
 pytest
-# curl http://127.0.0.1:8080/
+curl -X 'POST' \
+  'http://[IP address]:8000/predict' \
+  -H 'accept: application/json' \
+  -F 'image=@/Users/hattori/Downloads/test_mapo.png'
+
 ```
 
 
@@ -56,7 +64,7 @@ The model training script is located in `scripts/train_model.py`. To train a new
 python scripts/train_model.py
 ```
 
-This will train a new model and save it as `src/mnist_model.pth`.
+This will train a new model and save it as `src/models/mnist_model.pth`.
 
 - `POST /predict`: Accepts an image file as input and returns the predicted digit.
 
